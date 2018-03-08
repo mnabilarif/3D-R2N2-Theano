@@ -76,7 +76,7 @@ def main():
 
     # Set main gpu
     #theano.sandbox.cuda.use(args.gpu_id)
-    theano.gpuarray.use(args.gpu_id)
+    #theano.gpuarray.use(args.gpu_id)
 
     if args.cfg_files is not None:
         for cfg_file in args.cfg_files:
@@ -107,7 +107,6 @@ def main():
     print('Using config:')
     pprint.pprint(cfg)
 
-    
     if not args.test:
         train_net()
     else:
