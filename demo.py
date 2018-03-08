@@ -82,9 +82,5 @@ if __name__ == '__main__':
     # Set the batch size to 1
     cfg_from_list(['CONST.BATCH_SIZE', 1])
     
-    #test image format
-    #import matplotlib.pyplot as plt
-    #ims_array = load_demo_images()
-    
     main()
     
