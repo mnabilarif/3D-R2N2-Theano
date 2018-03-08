@@ -136,7 +136,10 @@ class Solver(object):
         # Main training loop
         for train_ind in range(start_iter, cfg.TRAIN.NUM_ITERATION + 1):
             data_timer.tic()
+            print("--------hello, this is iteration %d-------" % train_ind)
+            print("--------train_queue % s before get-----------" % train_queue.empty())
             batch_img, batch_voxel = train_queue.get()
+            print("--------train_queue % s after get-----------" % train_queue.empty())
             data_timer.toc()
 
             if self.net.is_x_tensor4:

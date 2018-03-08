@@ -14,7 +14,7 @@ __C.NET_NAME = 'res_gru_net'
 __C.PROFILE = False
 
 __C.CONST = edict()
-__C.CONST.DEVICE = 'gpu0'
+__C.CONST.DEVICE = 'cuda0'
 __C.CONST.RNG_SEED = 0
 __C.CONST.IMG_W = 127
 __C.CONST.IMG_H = 127
@@ -46,7 +46,7 @@ __C.TRAIN.USE_REAL_IMG = False
 __C.TRAIN.DATASET_PORTION = [0, 0.8]
 
 # Data worker
-__C.TRAIN.NUM_WORKER = 1  # number of data workers
+__C.TRAIN.NUM_WORKER = 5  # number of data workers
 __C.TRAIN.NUM_ITERATION = 60000  # maximum number of training iterations
 __C.TRAIN.WORKER_LIFESPAN = 100  # if use blender, kill a worker after some iteration to clear cache
 __C.TRAIN.WORKER_CAPACITY = 1000  # if use OSG, load only limited number of models at a time

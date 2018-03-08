@@ -10,6 +10,7 @@ from lib.data_process import kill_processes, make_data_processes
 
 # Define globally accessible queues, will be used for clean exit when force
 # interrupted.
+print("--------hello, i am in train_net() now proble might be there---------")
 train_queue, val_queue, train_processes, val_processes = None, None, None, None
 
 
@@ -66,7 +67,8 @@ def train_net():
         1,
         repeat=True,
         train=False)
-
+    import theano.gpuarray
+    theano.gpuarray.use(cfg.CONST.DEVICE)
     # Train the network
     solver.train(train_queue, val_queue)
 
