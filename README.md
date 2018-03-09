@@ -131,7 +131,7 @@ Used the gpu
 ```
 - 用pip安装easydict
 
-anaconda里有requirements.txt里要求的大部分哭，除了easydict，但是用conda装easydict会和conda里的其他库冲突，所以用pip安装
+anaconda有requirements.txt里要求的大部分库，除了easydict。但是用conda装easydict会和conda里的其他库冲突，所以用pip安装
 ```
 pip install easydict
 ```
