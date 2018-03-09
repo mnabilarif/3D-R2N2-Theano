@@ -50,7 +50,7 @@ We used [ShapeNet](http://shapenet.cs.stanford.edu) models to generate rendered 
 - Trained ResidualGRUNet Weights [ftp://cs.stanford.edu/cs/cvgl/ResidualGRUNet.npy](ftp://cs.stanford.edu/cs/cvgl/ResidualGRUNet.npy)
 
 
-## Installation(论文github给的安装)
+## Installation原始版(论文github给的安装)
 
 The package requires python3. You can follow the direction below to install virtual environment within the repository or install anaconda for python 3.
 
@@ -70,6 +70,9 @@ source py3/bin/activate
 pip install -r requirements.txt
 cp .theanorc ~/.theanorc
 ```
+
+## Installation实际版(我用学校的gpu时的安装)
+
 
 ### Running demo.py
 
