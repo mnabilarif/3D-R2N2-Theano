@@ -121,9 +121,9 @@ Install the code samples and the cuDNN Library User Guide
 sudo dpkg -i libcudnn7-doc_7.1.1.5-1+cuda8.0_amd64.deb
 ```
 - Verifying(和它网站上的一样)
-```
+
 http://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html#verify
-```
+
 - 安装anaconda
 ```
 bash Anaconda3-5.1.0-Linux-x86_64.sh
