@@ -104,9 +104,24 @@ Copyright (c) 2005-2016 NVIDIA Corporation
 Built on Tue_Jan_10_13:22:03_CST_2017
 Cuda compilation tools, release 8.0, V8.0.61
 ```
-- 安装cudnn(来自[installation guide](http://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html#installlinux-deb))
+- 安装cudnn(来自[installation guide](http://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html#installlinux-deb)但是版本不一样)
 ```
+cd <cudnnpath>
 ```
+Install the runtime library
+```
+sudo dpkg -i libcudnn7_7.1.1.5-1+cuda8.0_amd64.deb
+```
+Install the developer library
+```
+sudo dpkg -i libcudnn7-dev_7.1.1.5-1+cuda8.0_amd64.deb
+```
+Install the code samples and the cuDNN Library User Guide
+```
+sudo dpkg -i libcudnn7-doc_7.1.1.5-1+cuda8.0_amd64.deb
+```
+- Verifying(和它网站上的一样)
+http://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html#verify
 
 - 安装anaconda
 ```
