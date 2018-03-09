@@ -135,6 +135,8 @@ anaconda有requirements.txt里要求的大部分库，除了easydict。但是用
 ```
 pip install easydict
 ```
+- Thanks my GD
+
 ### Running demo.py
 
 - Install meshlab (skip if you have another mesh viewer). If you skip this step, demo code will not visualize the final prediction.
