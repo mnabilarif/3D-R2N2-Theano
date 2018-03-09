@@ -73,11 +73,11 @@ cp .theanorc ~/.theanorc
 
 ## Installation实际版(我用学校的gpu时的安装)
 
-查看gpu状态
+-查看gpu状态
 ```
 nvidia-smi
 ```
-安装anaconda
+-安装anaconda
 ```
 bash Anaconda3-5.1.0-Linux-x86_64.sh
 ```
