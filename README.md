@@ -121,14 +121,25 @@ Install the code samples and the cuDNN Library User Guide
 sudo dpkg -i libcudnn7-doc_7.1.1.5-1+cuda8.0_amd64.deb
 ```
 - Verifying(和它网站上的一样)
+```
 http://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html#verify
-
+```
 - 安装anaconda
 ```
 bash Anaconda3-5.1.0-Linux-x86_64.sh
 ```
-
-
+- 用conda安装libpygpu(theano gpu backend)
+好像是这个，但是这个gpu backend好像是老的，新的是pygpu，在theano的conda-forge里装的有
+```
+conda install -c anaconda libgpuarray
+```
+- 用conda安装theano
+```
+conda install -c conda-forge theano 
+```
+- 测试theano能不能用gpu(来自[testing theano with gpu](http://deeplearning.net/software/theano/tutorial/using_gpu.html))
+```
+```
 ### Running demo.py
 
 - Install meshlab (skip if you have another mesh viewer). If you skip this step, demo code will not visualize the final prediction.
