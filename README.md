@@ -129,6 +129,7 @@ http://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html#verify
 bash Anaconda3-5.1.0-Linux-x86_64.sh
 ```
 - 用conda安装libpygpu(theano gpu backend)
+
 好像是这个，但是这个gpu backend好像是老的，新的是pygpu，在theano的conda-forge里装的有
 ```
 conda install -c anaconda libgpuarray
