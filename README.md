@@ -1,7 +1,3 @@
-# 3D-R<sup>2</sup>N<sup>2</sup>: 3D Recurrent Reconstruction Neural Network
-
-This repository contains the source codes for the paper [Choy et al., 3D-R2N2: A Unified Approach for Single and Multi-view 3D Object Reconstruction, ECCV 2016](http://arxiv.org/abs/1604.00449). Given one or multiple views of an object, the network generates voxelized ( a voxel is the 3D equivalent of a pixel) reconstruction of the object in 3D.
-
 ## Citing this work
 
 If you find this work useful in your research, please consider citing:
@@ -18,27 +14,6 @@ If you find this work useful in your research, please consider citing:
 ## Project Page
 
 The project page is available at [http://cvgl.stanford.edu/3d-r2n2/](http://cvgl.stanford.edu/3d-r2n2/).
-
-## Overview
-
-![Overview](imgs/overview.png)
-*Left: images found on Ebay, Amazon, Right: overview of `3D-R2N2`*
-
-Traditionally, single view reconstruction and multi-view reconstruction are disjoint problems that have been dealt using different approaches. In this work, we first propose a unified framework for both single and multi-view reconstruction using a `3D Recurrent Reconstruction Neural Network` (3D-R2N2).
-
-| 3D-Convolutional LSTM     | 3D-Convolutional GRU    | Inputs (red cells + feature) for each cell (purple) |
-|:-------------------------:|:-----------------------:|:---------------------------------------------------:|
-| ![3D-LSTM](imgs/lstm.png) | ![3D-GRU](imgs/gru.png) | ![3D-LSTM](imgs/lstm_time.png)                      |
-
-We can feed in images in random order since the network is trained to be invariant to the order. The critical component that enables the network to be invariant to the order is the `3D-Convolutional LSTM` which we first proposed in this work. The `3D-Convolutional LSTM` selectively updates parts that are visible and keeps the parts that are self-occluded.
-
-![Networks](imgs/full_network.png)
-*We used two different types of networks for the experiments: a shallow network (top) and a deep residual network (bottom).*
-
-
-## Results
-
-Please visit the result [visualization page](http://3d-r2n2.stanford.edu/viewer/) to view 3D reconstruction results interactively.
 
 
 ## Datasets
@@ -138,8 +113,21 @@ conda install -c anaconda libgpuarray
 ```
 conda install -c conda-forge theano 
 ```
-- 测试theano能不能用gpu(来自[testing theano with gpu](http://deeplearning.net/software/theano/tutorial/using_gpu.html#testing-theano-with-gpu))
+- 测试theano能不能用gpu和cudnn(来自[testing theano with gpu](http://deeplearning.net/software/theano/tutorial/using_gpu.html#testing-theano-with-gpu))
+
+拷贝链接中的代码，并命名为testing_theano_with_gpu.py
 ```
+THEANO_FLAGS='device=cuda0, floatX=float32, force_device=True, optimizer_including=cudnn' python3 testing_theano_with_gpu.py 
+```
+结果如下
+```
+Using cuDNN version 7101 on context None
+Disabling allocation cache on cuda0
+Mapped name None to device cuda0: GeForce GTX 1080 Ti (0000:03:00.0)
+[GpuElemwise{exp,no_inplace}(<GpuArrayType<None>(float32, vector)>), HostFromGpu(gpuarray)(GpuElemwise{exp,no_inplace}.0)]
+Looping 1000 times took 0.445036 seconds
+Result is [1.2317803 1.6187935 1.5227807 ... 2.2077181 2.2996776 1.623233 ]
+Used the gpu
 ```
 ### Running demo.py
 
