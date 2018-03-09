@@ -104,7 +104,7 @@ Copyright (c) 2005-2016 NVIDIA Corporation
 Built on Tue_Jan_10_13:22:03_CST_2017
 Cuda compilation tools, release 8.0, V8.0.61
 ```
-- 安装cudnn(来自http://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html#installlinux-deb)
+- 安装cudnn(来自[installation guide](http://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html#installlinux-deb))
 ```
 ```
 
