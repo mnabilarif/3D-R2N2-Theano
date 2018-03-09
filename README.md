@@ -48,6 +48,8 @@ cp .theanorc ~/.theanorc
 
 ## Installation实际版(我用学校的gpu时的安装)
 
+学校装好了Nvidia driver和cuda
+
 - 查看gpu状态
 ```
 nvidia-smi
