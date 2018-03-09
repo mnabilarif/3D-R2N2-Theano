@@ -95,7 +95,7 @@ Install the code samples and the cuDNN Library User Guide
 ```
 sudo dpkg -i libcudnn7-doc_7.1.1.5-1+cuda8.0_amd64.deb
 ```
-- Verifying(和它网站上的一样)
+- Verify cudnn(和它网站上的一样)
 
 http://docs.nvidia.com/deeplearning/sdk/cudnn-install/index.html#verify
 
@@ -128,6 +128,12 @@ Mapped name None to device cuda0: GeForce GTX 1080 Ti (0000:03:00.0)
 Looping 1000 times took 0.445036 seconds
 Result is [1.2317803 1.6187935 1.5227807 ... 2.2077181 2.2996776 1.623233 ]
 Used the gpu
+```
+- 用pip安装easydict
+
+anaconda里有requirements.txt里要求的大部分哭，除了easydict，但是用conda装easydict会和conda里的其他库冲突，所以用pip安装
+```
+pip install easydict
 ```
 ### Running demo.py
 
