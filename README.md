@@ -200,7 +200,21 @@ tar -xzf ShapeNetVox32.tgz -C ShapeNet/
 
 **Note**: The initial compilation might take awhile if you run the theano for the first time due to various compilations. The problem will not persist for the subsequent runs.
 
+### 训练时可能会有的"gpu out of memory" bug
+```
+pygpu.gpuarray.GpuArrayException: Out of memory
+```
+解决方法(来自https://groups.google.com/d/msg/theano-users/kpfsem4tabA/bjOuVtCIAwAJ)
 
+1.在~/.theanorc中设置
+```
+[gpuarray]
+preallocate = -1
+```
+2.在所有processes spawn后再标注使用gpu
+```
+详见lib/train_net.py第70、71行
+```
 ## License
 
 MIT License
