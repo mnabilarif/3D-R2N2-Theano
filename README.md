@@ -195,7 +195,7 @@ tar -xzf ShapeNetVox32.tgz -C ShapeNet/
 - Train and test the network using the training shell script
 
 ```
-./experiments/script/res_gru_net.sh
+./experiments/scripts/res_gru_net.sh
 ```
 
 **Note**: The initial compilation might take awhile if you run the theano for the first time due to various compilations. The problem will not persist for the subsequent runs.
