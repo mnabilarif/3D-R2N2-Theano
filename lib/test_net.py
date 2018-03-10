@@ -41,6 +41,10 @@ def test_net():
     queue = Queue(cfg.QUEUE_SIZE)
     data_pair = category_model_id_pair(dataset_portion=cfg.TEST.DATASET_PORTION)
     processes = make_data_processes(queue, data_pair, 1, repeat=False, train=False)
+    #specify to use gpu
+    import theano.gpuarray
+    theano.gpuarray.use(cfg.CONST.DEVICE)
+
     num_data = len(processes[0].data_paths)
     num_batch = int(num_data / batch_size)
 
