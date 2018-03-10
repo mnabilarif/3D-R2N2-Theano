@@ -213,7 +213,7 @@ preallocate = -1
 ```
 2.在所有processes spawn后再标注使用gpu
 ```
-详见lib/train_net.py第70、71行
+详见lib/train_net.py第70、71行和lib/test_net.py第45、46行
 ```
 ## License
 
