@@ -33,15 +33,14 @@ def download_model(fn):
         call(['curl', 'ftp://cs.stanford.edu/cs/cvgl/ResidualGRUNet.npy',
               '--create-dirs', '-o', fn])
 
-
+        
 def load_demo_images():
     ims = []
-    for i in range(1):
-        im = Image.open('imgs/%d.jpg' % i).resize((127,127))
+    for i in range(3):
+        im = Image.open('imgs/%d.png' % i)
         ims.append([np.array(im).transpose(
             (2, 0, 1)).astype(np.float32) / 255.])
     return np.array(ims)
-
 
 def main():
     '''Main demo function'''
