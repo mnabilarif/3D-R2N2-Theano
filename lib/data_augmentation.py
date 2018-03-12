@@ -14,7 +14,6 @@ def image_transform(img, crop_x, crop_y, crop_loc=None, color_tint=None):
         crop_loc = [np.random.randint(0, crop_y), np.random.randint(0, crop_x)]
 
     if crop_loc:
-        print()
         cr, cc = crop_loc
         height, width, _ = img.shape
         img_h = height - crop_y
