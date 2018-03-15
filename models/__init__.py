@@ -1,7 +1,7 @@
-from models.gru_net import GRUNet
-from models.res_gru_net import ResidualGRUNet
+from models.lstm_net import LSTMNet
+from models.res_lstm_net import ResidualLSTMNet
 
-MODELS = (GRUNet, ResidualGRUNet)
+MODELS = (LSTMNet, ResidualLSTMNet)
 
 
 def get_models():
