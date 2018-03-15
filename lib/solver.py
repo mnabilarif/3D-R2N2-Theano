@@ -93,8 +93,12 @@ class Solver(object):
             updates = ADAM(lr, net.params, net.grads, net.loss, iteration)
         else:
             sys.exit('Error: Unimplemented optimization policy')
-
+        
         self.updates = updates
+        #two more updates related to past hidden state and cell state
+        self.updates.append((self.net.hidden_last, self.net.new_hidden_last))
+        self.updates.append((self.net.cell_last, self.net.new_cell_last))
+        
 
     def set_lr(self, lr):
         self.lr.set_value(lr)
