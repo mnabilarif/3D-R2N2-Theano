@@ -32,7 +32,7 @@ class Weight(object):
                  is_bias,
                  mean=0,
                  std=0.01,
-                 filler='msra',
+                 filler='gaussian',
                  fan_in=None,
                  fan_out=None,
                  name=None):
@@ -71,7 +71,7 @@ class Weight(object):
                 rng.uniform(
                     low=-scale, high=scale, size=w_shape), dtype=theano.config.floatX)
         elif filler == 'constant':
-            self.np_values = np.cast[theano.config.floatX](mean * np.ones(
+            self.np_values = np.cast[theano.config.floatX](mean * np.zeros(
                 w_shape, dtype=theano.config.floatX))
         elif filler == 'orth':
             ndim = np.prod(w_shape)
@@ -244,7 +244,45 @@ class FlattenLayer(Layer):
 
     def set_output(self):
         self._output = \
-            self._prev_layer.output.flatten(2)  # flatten from the second dim        
+            self._prev_layer.output.flatten(2)  # flatten from the second dim
+
+class LayerNormalizationLayer(Layer):
+    """layer normalization layer"""
+    def __init__(self, prev_layer, params = None):
+        super().__init__(prev_layer)
+        self.output_shape = self._input_shape
+        if params is None:
+            self.alpha = Weight(self._input_shape, \
+                                is_bias = False, \
+                                filler = 'constant', \
+                                mean = 0)
+            self.beta = Weight(self._input_shape, \
+                                is_bias = False, \
+                                filler = 'constant', \
+                                mean = 1)
+        else:
+            #ensure that alpha and beta have the same shape as input
+            for i, s in enumerate(self._input_shape):
+                assert(params[0].shape[i] == s)
+                assert(params[0].shape[i] == s)
+            self.alpha = params[0]
+            self.beta = params[1]
+        self.params = [self.alpha, self.beta]
+        
+        
+    def set_output(self):
+        activs = self._prev_layer.output.flatten(2)
+        #mean and std of all activations of one layer
+        
+        mean = tensor.mean(activs, axis = 1)
+        std = tensor.std(activs, axis = 1)
+        
+        output = (activs - mean) / std * self.alpha + self.beta
+                 
+        self._output = output
+                 
+                 
+                 
                  
 class DimShuffleLayer(Layer):
 
@@ -456,23 +494,6 @@ class Conv3DLayer(Layer):
                              + self.b.val.dimshuffle('x', 'x', 0, 'x', 'x')
 
 
-###############################################################################
-#                                                                             #
-#                         layer normalization layer                           #
-#                                                                             #
-###############################################################################
-def LayerNormalization(summed_input, alpha, beta):
-    eps = 1e-5
-    activs = summed_input.flatten(2)
-    """layer normalization function"""
-    #different training cases have different normalization terms
-    mean = tensor.mean(activs, axis = 1).dimshuffle(0, 'x', 'x', 'x', 'x')
-    #in case of 0 std
-    variance = (tensor.var(activs, axis = 1) + eps)
-    std = tensor.sqrt(variance).dimshuffle(0, 'x', 'x', 'x', 'x')
-    output = (summed_input - mean) / std * alpha + beta
-    return output
-
 class FCConv3DLayer(Layer):
     """3D Convolution layer with FC input and hidden unit"""
 
@@ -493,8 +514,9 @@ class FCConv3DLayer(Layer):
 
         self._output_shape = [self._input_shape[0], self._input_shape[1], filter_shape[0],
                               self._input_shape[3], self._input_shape[4]]
+
         if params is None:
-            self.Wh = Weight(self._filter_shape, filler='xavier', is_bias=False)
+            self.Wh = Weight(self._filter_shape, is_bias=False)
 
             self._Wx_shape = [self._fc_layer._output_shape[1], np.prod(self._output_shape[1:])]
 
@@ -502,49 +524,18 @@ class FCConv3DLayer(Layer):
             # speed, we expand the cells and compute a matrix multiplication.
             self.Wx = Weight(
                 self._Wx_shape,
-                filler='xavier',
                 is_bias=False,
                 fan_in=self._input_shape[1],
                 fan_out=self._output_shape[2])
 
-            self.b = Weight((filter_shape[0],), is_bias=True, mean=0, filler='constant')
-            
-            """add four more parameters to implement layer normalization"""
-            param_shape = self._output_shape[1:]
-            
-            self.alpha1 = Weight(param_shape, \
-                                is_bias = False, \
-                                filler = 'constant', \
-                                mean = 1)
-            self.beta1 = Weight(param_shape, \
-                                is_bias = False, \
-                                filler = 'constant', \
-                                mean = 0)
-            self.alpha2 = Weight(param_shape, \
-                                is_bias = False, \
-                                filler = 'constant', \
-                                mean = 1)
-            self.beta2 = Weight(param_shape, \
-                                is_bias = False, \
-                                filler = 'constant', \
-                                mean = 0)
-            
-            params = [self.Wh, self.Wx, self.b, \
-                      self.alpha1, self.beta1, self.alpha2, self.beta2]
-            
+            self.b = Weight((filter_shape[0],), is_bias=True, mean=0.1, filler='constant')
+            params = [self.Wh, self.Wx, self.b]
         else:
             self.Wh = params[0]
             self.Wx = params[1]
             self.b = params[2]
-            
-            """newly added parameters for layer normalization"""
-            self.alpha1 = params[3]
-            self.beta1 = params[4]
-            self.alpha2 = params[5]
-            self.beta2 = params[6]
-            
-        self.params = [self.Wh, self.Wx, self.b, \
-                       self.alpha1, self.beta1, self.alpha2, self.beta2]
+
+        self.params = [self.Wh, self.Wx, self.b]
 
     def set_output(self):
         padding = self._padding
@@ -555,29 +546,18 @@ class FCConv3DLayer(Layer):
                                     input_shape[2],
                                     input_shape[3] + 2 * padding[3],
                                     input_shape[4] + 2 * padding[4])
-        
+
         padded_input = tensor.set_subtensor(padded_input[:, padding[1]:padding[1] + input_shape[
             1], :, padding[3]:padding[3] + input_shape[3], padding[4]:padding[4] + input_shape[4]],
                                             self._prev_layer.output)
-        
-        #layer normalize the Wx*T(X)
+
         fc_output = tensor.reshape(
             tensor.dot(self._fc_layer.output, self.Wx.val), self._output_shape)
-        normalized_fc_output = LayerNormalization(fc_output, \
-                                                  self.alpha1.val.dimshuffle('x', 0, 1, 2, 3), \
-                                                  self.beta1.val.dimshuffle('x', 0, 1, 2, 3))
         
-        #layer normalize the Wh*h_(t-1)
         padded_input = padded_input.dimshuffle(0, 2, 1, 3, 4)
-        conv_output = conv3d(padded_input, self.Wh.val.dimshuffle(0, 2, 1, 3, 4)).dimshuffle(0, 2, 1, 3, 4)
-        normalized_conv_output = LayerNormalization(conv_output, \
-                                                    self.alpha2.val.dimshuffle('x', 0, 1, 2, 3), \
-                                                    self.beta2.val.dimshuffle('x', 0, 1, 2, 3))        
         
-        #set the output
-        self._output = normalized_conv_output +\
-                       normalized_fc_output + \
-                       self.b.val.dimshuffle('x', 'x', 0, 'x', 'x')
+        self._output = conv3d(padded_input, self.Wh.val.dimshuffle(0, 2, 1, 3, 4)).dimshuffle(0, 2, 1, 3, 4)\
+                               + fc_output +  self.b.val.dimshuffle('x', 'x', 0, 'x', 'x')
         
 
 class Conv3DLSTMLayer(Layer):
