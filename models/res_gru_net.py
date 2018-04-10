@@ -202,4 +202,3 @@ class ResidualGRUNet(Net):
         self.params = get_trainable_params()
         self.output = softmax_loss.prediction()
         self.activations = [update_all]
-        self.conv11_output = conv11.output

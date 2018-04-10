@@ -12,7 +12,7 @@ from lib.layers import TensorProductLayer, ConvLayer, PoolLayer, Unpool3DLayer, 
 
 
 class GRUNet(Net):
-    
+
     def network_definition(self):
 
         # (multi_views, self.batch_size, 3, self.img_h, self.img_w),
@@ -117,26 +117,17 @@ class GRUNet(Net):
             gru_out_ = AddLayer(
                 EltwiseMultiplyLayer(update_gate_, prev_s_),
                 EltwiseMultiplyLayer(comp_update_gate_, tanh_t_x_rs_))
-            
-            
-            return gru_out_.output, update_gate_.output,\
-                   rect1_.output, rect2_.output, rect3_.output,\
-                   rect4_.output, rect5_.output, rect6_.output,\
-                   rect7_.output, update_gate_.output, \
-                   reset_gate_.output, tanh_t_x_rs_.output
-                   
+
+            return gru_out_.output, update_gate_.output
+
         s_update, _ = theano.scan(recurrence,
             sequences=[self.x],  # along with images, feed in the index of the current frame
             outputs_info=[tensor.zeros_like(np.zeros(s_shape),
                                             dtype=theano.config.floatX),
                            tensor.zeros_like(np.zeros(s_shape),
-                                             dtype=theano.config.floatX),\
-                                             None, None, None, None, None,\
-                                             None, None, None, None, None])#store activations
-        
-        #the first return value is gru_out_.output
-        #the second is update_gate_.output
-        update_all = s_update[1]
+                                             dtype=theano.config.floatX)])
+
+        update_all = s_update[-1]
         s_all = s_update[0]
         s_last = s_all[-1]
         
@@ -159,7 +150,6 @@ class GRUNet(Net):
         rect10 = LeakyReLU(conv10)
         
         conv11 = Conv3DLayer(rect10, (n_deconvfilter[5], 3, 3, 3))
-        
         softmax_loss = SoftmaxWithLoss3D(conv11.output)
         
         self.loss = softmax_loss.loss(self.y)
@@ -167,53 +157,4 @@ class GRUNet(Net):
         self.params = get_trainable_params()
         self.output = softmax_loss.prediction()
         self.activations = [update_all]
-        
-        ############################################################
-        #                                                          # 
-        #          store activations of all nonlinearities         #     
-        #                                                          # 
-        ############################################################
-        
-        
-        #s_update[2:] is the value of intermediate activations
-        
-        self.rect1_output = s_update[2][-1]
-        self.rect2_output = s_update[3][-1]
-        self.rect3_output = s_update[4][-1]
-        self.rect4_output = s_update[5][-1]
-        self.rect5_output = s_update[6][-1]
-        self.rect6_output = s_update[7][-1]
-        self.rect7_output1 = s_update[8][-1]
-        
-        self.update_gate_output = s_update[9][-1]
-        self.reset_gate_ = s_update[10][-1]
-        self.tanh_t_x_rs_output = s_update[11][-1]
-        
-        
-        self.rect7_output2 = rect7.output
-        self.rect8_output = rect8.output
-        self.rect9_output = rect9.output
-        self.rect10_output = rect10.output
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         

@@ -35,10 +35,10 @@ class Net(object):
         self.params = []  # all learnable params
         self.grads = []  # will be filled out automatically
         
-        #property to store net's latest hidden state and cell state
-        self.hidden_last = None
-        self.cell_last = None
-                     
+        #a property to store net's latest hidden state
+        self.s_last_shared = None 
+             
+        #set up the model
         self.setup()
 
     def setup(self):
@@ -51,6 +51,7 @@ class Net(object):
         self.error
         self.params
         self.output
+        self.s_last_shared
         self.activations is optional
         """
         raise NotImplementedError("Virtual Function")
@@ -68,17 +69,6 @@ class Net(object):
         for param in self.params:
             # params_cpu[param.name] = np.array(param.val.get_value())
             params_cpu.append(param.val.get_value())
-            
-        #also store the latest hidden state and cell state
-        hidden_last_value = self.hidden_last.get_value()
-        n_batch = hidden_last_value.shape[0]
-        average_hidden_state_value = hidden_last_value.sum(axis=0, keepdims=True) / n_batch
-        params_cpu.append(average_hidden_state_value)
-        
-        cell_last_value = self.cell_last.get_value()
-        average_cell_state_value = cell_last_value.sum(axis=0, keepdims=True) / n_batch #batch size is the same
-        params_cpu.append(average_cell_state_value)
-                                                          
         np.save(filename, params_cpu)
         print('saving network parameters to ' + filename)
 
@@ -94,23 +84,12 @@ class Net(object):
         for param_idx, param in enumerate(self.params):
             try:
                 param.val.set_value(params_cpu[succ_ind])
+                #the last one is the latest hidden state(index start from 0)
+                if succ_ind == len(self.params):
+                    self.s_last_shared.set_value(params_cpu[succ_ind])
                 succ_ind += 1
             except IndexError:
                 if ignore_param:
                     print('Ignore mismatch')
                 else:
                     raise
-        #the second last one is the latest hidden state(index from 0)
-        if succ_ind == len(self.params):
-            self.hidden_last.set_value(params_cpu[succ_ind])
-            succ_ind += 1
-        #the last one is the latest cell state
-        if succ_ind == len(self.params) + 1:
-            self.cell_last.set_value(params_cpu[succ_ind])
-            succ_ind += 1
-        #ensure index match
-        try:
-            possible_error = params_cpu[succ_ind]
-            raise Exception("index doesn't match")
-        except IndexError:
-            pass
