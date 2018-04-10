@@ -104,10 +104,7 @@ class Solver(object):
         if self._train_loss is None:
             print('Compiling training function')
             self._train_loss = theano.function(
-                [self.net.x, self.net.y], \
-                self.net.loss, \
-                updates = self.updates, \
-                profile = cfg.PROFILE)
+                [self.net.x, self.net.y], self.net.loss, updates=self.updates, profile=cfg.PROFILE)
         self.iteration.set_value(self.iteration.get_value() + 1)
         return self._train_loss
 

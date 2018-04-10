@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Mar 17 17:04:59 2018
-
-@author: wangchu
-"""
-
 import numpy as np
 
 # Theano
@@ -15,6 +7,10 @@ import theano.tensor as tensor
 #from theano.tensor.nnet import conv, conv3d, sigmoid
 from theano.tensor.nnet import conv2d, conv3d, sigmoid, conv3d2d
 from theano.tensor.signal import pool
+
+#utility class for visualization
+from .vis_util import GuidedBackprop, leakyReLU_func
+
 
 trainable_params = []
 
@@ -642,6 +638,8 @@ class ConcatLayer(Layer):
 
 
 class LeakyReLU(Layer):
+    #a class property to use guided backprop
+    modified_Op = GuidedBackprop(leakyReLU_func)
 
     def __init__(self, prev_layer, leakiness=0.01):
         super().__init__(prev_layer)
@@ -650,37 +648,31 @@ class LeakyReLU(Layer):
 
     def set_output(self):
         self._input = self._prev_layer.output
-        if self._leakiness:
-            # The following is faster than T.maximum(leakiness * x, x),
-            # and it works with nonsymbolic inputs as well. Also see:
-            # http://github.com/benanne/Lasagne/pull/163#issuecomment-81765117
-            f1 = 0.5 * (1 + self._leakiness)
-            f2 = 0.5 * (1 - self._leakiness)
-            self._output = f1 * self._input + f2 * abs(self._input)
-            # self.param = [self.leakiness]
-        else:
-            self._output = 0.5 * (self._input + abs(self._input))
-
+        self._output=leakyReLU_func(self._input, self._leakiness)
 
 class SigmoidLayer(Layer):
-    
+    #a class property to use guided backprop
+    modified_Op = GuidedBackprop(sigmoid)
 
     def __init__(self, prev_layer):
         super().__init__(prev_layer)
         self._output_shape = self._input_shape
 
     def set_output(self):
-        self._output = sigmoid(self._prev_layer.output)
+        #self._output = sigmoid(self._prev_layer.output)
+        self._output = SigmoidLayer.modified_Op(self._prev_layer.output)
 
 
 class TanhLayer(Layer):
+    #a class property to use guided backprop
+    modified_Op = GuidedBackprop(tensor.tanh)
 
     def __init__(self, prev_layer):
         super().__init__(prev_layer)
 
     def set_output(self):
-        self._output = tensor.tanh(self._prev_layer.output)
-
+        #self._output = tensor.tanh(self._prev_layer.output)
+        self._output = TanhLayer.modified_Op(self._prev_layer.output)
 
 class ComplementLayer(Layer):
     """ Compute 1 - input_layer.output """
@@ -691,6 +683,10 @@ class ComplementLayer(Layer):
 
     def set_output(self):
         self._output = tensor.ones_like(self._prev_layer.output) - self._prev_layer.output
+
+
+
+
 
 
 
