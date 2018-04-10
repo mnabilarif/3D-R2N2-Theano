@@ -5,7 +5,8 @@ set -e
 
 export PYTHONUNBUFFERED="True"
 
-NET_NAME=ResidualGRUNet
+#ResidualGRUNet will be out of memory on GTX1080
+NET_NAME=GRUNet
 EXP_DETAIL=default_model
 OUT_PATH='./output/'$NET_NAME/$EXP_DETAIL
 LOG="$OUT_PATH/log.`date +'%Y-%m-%d_%H-%M-%S'`"
@@ -18,8 +19,8 @@ echo Logging output to "$LOG"
 export THEANO_FLAGS="floatX=float32,device=cpu,optimizer_including=cudnn,assert_no_cpu_op='raise'"
 
 python3 main.py \
-      --batch-size 24 \
-      --iter 60000\
+      --batch-size 36 \
+      --iter 10000 \
       --out $OUT_PATH \
       --model $NET_NAME \
       ${*:1}
