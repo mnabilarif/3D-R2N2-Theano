@@ -16,7 +16,7 @@ mkdir -p $OUT_PATH
 exec &> >(tee -a "$LOG")
 echo Logging output to "$LOG"
 
-export THEANO_FLAGS="floatX=float32,device=cpu,optimizer_including=cudnn,assert_no_cpu_op='raise'"
+export THEANO_FLAGS="floatX=float32,device=cuda0,optimizer_including=cudnn,assert_no_cpu_op='raise'"
 
 python3 main.py \
       --batch-size 24 \
